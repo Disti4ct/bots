@@ -1,0 +1,5 @@
+TOKEN = ""
+
+GROUP_ID = ""
+
+FORBIDDEN_WORDS = []
