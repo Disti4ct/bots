@@ -2,4 +2,6 @@ TOKEN = ""
 
 GROUP_ID = ""
 
+SECRET = ""
+
 FORBIDDEN_WORDS = []

@@ -10,6 +10,10 @@ Fill data in the **config.py**
 TOKEN = "" # bot's token
 GROUP_ID = "" # ID for a group where the bot will manage
 '''
+who knows this secret can use a secret method
+'''
+SECRET = ""
+'''
 if message has some of this words
 then the bot'll delete this message
 '''
