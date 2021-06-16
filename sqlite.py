@@ -20,22 +20,38 @@ class SQLight:
 
     def increase_user_karma(self, user_id):
         karma = self.get_user_karma(user_id)
-        with self.connection:
-            return self.cursor.execute()
+
+        if not isinstance(karma, int) or karma == 42:
+            return False
+
+        self.set_user_karma(user_id, karma + 1)
 
     def decrease_user_karma(self, user_id):
         karma = self.get_user_karma(user_id)
-        with self.connection:
-            return self.cursor.execute()
+
+        if not isinstance(karma, int) or karma == -42:
+            return False
+
+        self.set_user_karma(user_id, karma - 1)
 
     def set_user_karma(self, user_id, karma):
+        if karma < -42 or karma > 42:
+            return False
+
         with self.connection:
-            return self.cursor.execute()
+            return self.cursor.execute(
+                "UPDATE users SET karma = ? WHERE user_id = ?",
+                (karma,  user_id),
+            )
 
     def get_user_karma(self, user_id):
         with self.connection:
-            karma = self.cursor.execute()
-            return int(karma)
+            karma = self.cursor.execute("SELECT karma FROM users WHERE user_id = ?", (user_id,)).fetchall()
+
+            if not bool(len(karma)):
+                return False
+ 
+            return int(karma[0][0])
 
     def close(self):
         self.connection.close()
