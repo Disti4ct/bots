@@ -58,12 +58,12 @@ async def on_user_left(message: types.Message):
 @dp.message_handler(is_admin=True, commands=["kick"], commands_prefix="!/")
 async def user_ban(message: types.Message):
     if not message.reply_to_message:
-        await message.reply("⚠️ This command must be the answer on some message")
+        await message.reply(
+            "⚠️ This command must be the answer on some message")
         return
 
-    await message.bot.delete_message(
-        chat_id=config.GROUP_ID, message_id=message.message_id
-    )
+    await message.bot.delete_message(chat_id=config.GROUP_ID,
+                                     message_id=message.message_id)
     await message.bot.kick_chat_member(
         chat_id=config.GROUP_ID,
         user_id=message.reply_to_message.from_user.id,
@@ -76,9 +76,9 @@ async def user_ban(message: types.Message):
 
 @dp.message_handler(is_admin=True, commands=["reborn"], commands_prefix="!/")
 async def user_unban(message: types.Message):
-    await message.bot.unban_chat_member(
-        chait_id=config.GROUP_ID, user_id=message, only_if_banned=True
-    )
+    await message.bot.unban_chat_member(chait_id=config.GROUP_ID,
+                                        user_id=message,
+                                        only_if_banned=True)
     await message.reply_to_message.reply("😇 User is reborned")
 
 
@@ -90,9 +90,8 @@ async def show_user_karma(message: types.Message):
     user_karma = db.get_user_karma(message.from_user.id)
     user_status = bot_helpers.get_status_by_karma(user_karma)
 
-    await message.bot.send_message(
-        config.GROUP_ID, f"📜 Your status: {str(user_status)}"
-    )
+    await message.bot.send_message(config.GROUP_ID,
+                                   f"📜 Your status: {str(user_status)}")
 
     if int(user_karma) == -42:
         await send_kicking_poll(
@@ -135,7 +134,8 @@ async def send_kicking_poll(*args):
             )
             await bot.send_message("😈 User is kicked")
         except:
-            await bot.send_message("The deletion failed. Isn't this the admin?")
+            await bot.send_message("The deletion failed. Isn't this the admin?"
+                                   )
     else:
         await bot.send_message("🤞 This time he was lucky")
 
