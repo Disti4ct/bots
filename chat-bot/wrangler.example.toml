@@ -1,0 +1,11 @@
+name = "chatbot"
+main = "src/index.js"
+# date depends on a wrangler version. It's probable will be a date of your work with code
+compatibility_date = "2023-03-28"
+send_metrics = false
+
+[vars]
+
+TG_BOT_TOKEN = ""
+OPEN_AI_TOKEN = ""
+CHAT_ID = ""

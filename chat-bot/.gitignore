@@ -1,0 +1,5 @@
+*lock.json
+*lock.yaml
+.env
+wrangler.toml
+node_modules
