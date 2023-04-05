@@ -1,5 +1,5 @@
-import { sendMessage, setupBot } from "./telegram";
 import { msgChatWithOpenAI } from "./openai";
+import { sendMessage, setupBot } from "./telegram";
 
 const getChatContext = (env) => {
   const { CHAT_ID } = env;
