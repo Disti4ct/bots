@@ -11,35 +11,23 @@ const getChatContext = (env) => {
   };
 };
 
-const loadMessage = async (request) => {
+const extractUserMessage = async (request) => {
   try {
     const raw = await request.json();
 
-    if (raw.message) {
-      return raw.message;
-    } else {
-      throw new Error("Invalid message");
-    }
+    return raw?.message?.text;
   } catch (error) {
     throw error;
   }
 };
 
-const requestToOpenAI = async ({
-  request,
-  chatContext,
-  botToken,
-  openAiToken,
-}) => {
+const requestToOpenAI = async ({ request, openAiToken }) => {
   try {
-    const message = await loadMessage(request);
-    const response = await msgChatWithOpenAI(message, openAiToken);
+    const message = await extractUserMessage(request);
 
-    if (response) {
-      sendMessage(response, botToken, chatContext);
-    } else if (response instanceof Error) {
-      sendMessage(`ERROR:CHAT: ${response.message}`, botToken, chatContext);
-    }
+    if (!message) return null;
+
+    return await msgChatWithOpenAI(message, openAiToken);
   } catch (error) {
     console.error(error);
     return new Response(
@@ -53,22 +41,21 @@ const requestToOpenAI = async ({
 };
 
 const handleRequest = async (params) => {
+  const { request, chatContext, botToken } = params;
+  const { pathname } = new URL(request.url);
+
   try {
-    const res = await requestToOpenAI(params);
+    if (pathname.startsWith("/telegram") && pathname.endsWith("/webhook")) {
+      const response = await requestToOpenAI(params);
 
-    if (!res) return null;
-
-    if (res?.ok) {
-      return new Response("<h2>It works</h2>", {
-        status: 200,
-        headers: { "Content-Type": "text/html" },
-      });
+      if (response) {
+        await sendMessage(response, botToken, chatContext);
+      } else if (response instanceof Error) {
+        await sendMessage("Cannot process your request", botToken, chatContext);
+      }
     }
 
-    return new Response("<h2>It does not work</h2>", {
-      status: 500,
-      headers: { "Content-Type": "text/html" },
-    });
+    return null;
   } catch (error) {
     console.error(error);
 
@@ -95,11 +82,13 @@ export default {
 
     await setupBot(request, TG_BOT_TOKEN, chatContext);
 
-    return handleRequest({
+    const response = await handleRequest({
       request,
       chatContext,
       botToken: TG_BOT_TOKEN,
       openAiToken: OPEN_AI_TOKEN,
     });
+
+    return response || new Response("yep", { status: 200 });
   },
 };

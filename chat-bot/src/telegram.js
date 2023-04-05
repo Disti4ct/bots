@@ -53,7 +53,7 @@ export const bindTelegramWebHook = async (token, url) => {
   }).then((res) => res.json());
 };
 
-const getCommands = async (token, context) => {
+const getCommands = async () => {
   return {
     start: {
       command: "/start",
@@ -78,27 +78,8 @@ const getCommands = async (token, context) => {
 export const setupBot = async (request, botToken, context) => {
   const domain = new URL(request.url).host;
   const url = `https://${domain}/telegram/${botToken}/webhook`;
-  const id = botToken.split(":")[0];
   const commands = getCommands(botToken, context);
-  const result = {
-    webhook: await bindTelegramWebHook(botToken, url),
-    command: await bindCommands(botToken, Object.values(commands)),
-  };
 
-  const HTML = `
-    <h2>${domain}</h2>
-    <br/>
-    <h4>Bot ID: ${id}</h4>
-    <p style="color: ${
-      result.webhook.ok ? "green" : "red"
-    }">Webhook: ${JSON.stringify(result.webhook)}</p>
-    <p style="color: ${
-      result.command.ok ? "green" : "red"
-    }">Command: ${JSON.stringify(result.command)}</p>
-  `;
-
-  return new Response(HTML, {
-    status: 200,
-    headers: { "Content-Type": "text/html" },
-  });
+  await bindTelegramWebHook(botToken, url);
+  await bindCommands(botToken, Object.values(commands));
 };

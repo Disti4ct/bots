@@ -1,5 +1,5 @@
 {
-  "name": "chat_bot",
+  "name": "chatbot",
   "version": "0.0.0",
   "devDependencies": {
     "wrangler": "2.13.0"

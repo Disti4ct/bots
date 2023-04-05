@@ -34,7 +34,7 @@ const requestCompletionsFromChatGPT = async (message, apiToken) => {
 
 export const msgChatWithOpenAI = async (message, apiToken) => {
   try {
-    return await requestCompletionsFromChatGPT(message.text, apiToken);
+    return await requestCompletionsFromChatGPT(message, apiToken);
   } catch (error) {
     return error;
   }
