@@ -45,7 +45,7 @@ const handleRequest = async (params) => {
   const { pathname } = new URL(request.url);
 
   try {
-    if (pathname.startsWith("/telegram") && pathname.endsWith("/webhook")) {
+    if (pathname === `/telegram/${botToken}/webhook`) {
       const response = await requestToOpenAI(params);
 
       if (response) {
@@ -80,7 +80,7 @@ export default {
     const { TG_BOT_TOKEN, OPEN_AI_TOKEN } = env;
     const chatContext = getChatContext(env);
 
-    await setupBot(request, TG_BOT_TOKEN, chatContext);
+    await setupBot(request, TG_BOT_TOKEN);
 
     const response = await handleRequest({
       request,
