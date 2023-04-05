@@ -3,7 +3,10 @@ import time
 
 import bot_helpers
 import config
-from aiogram import Bot, Dispatcher, executor, types
+from aiogram import Bot
+from aiogram import Dispatcher
+from aiogram import executor
+from aiogram import types
 from filters import IsAdminFilter
 from sqlite import SQLight
 
