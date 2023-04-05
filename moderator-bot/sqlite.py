@@ -1,5 +1,6 @@
 import sqlite3
 
+
 class SQLight:
     def __init__(self, database):
         self.connection = sqlite3.connect(database)
@@ -7,10 +8,11 @@ class SQLight:
 
     def user_exists(self, user_id):
         with self.connection:
-            result = self.cursor.execute("SELECT * FROM `users` WHERE `user_id` = ?", (user_id,)).fetchall()
+            result = self.cursor.execute(
+                "SELECT * FROM `users` WHERE `user_id` = ?", (user_id,)).fetchall()
             return bool(len(result))
 
-    def add_user(self, user_id, karma = 0):
+    def add_user(self, user_id, karma=0):
         with self.connection:
             return self.cursor.execute("INSERT INTO `users` (`user_id`, `karma`) VALUES(?,?)", (user_id, karma))
 
@@ -46,11 +48,12 @@ class SQLight:
 
     def get_user_karma(self, user_id):
         with self.connection:
-            karma = self.cursor.execute("SELECT karma FROM users WHERE user_id = ?", (user_id,)).fetchall()
+            karma = self.cursor.execute(
+                "SELECT karma FROM users WHERE user_id = ?", (user_id,)).fetchall()
 
             if not bool(len(karma)):
                 return False
- 
+
             return int(karma[0][0])
 
     def close(self):
