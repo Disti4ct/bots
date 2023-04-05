@@ -1,14 +1,14 @@
-import {TELEGRAM_API_DOMAIN} from "./constants";
+import { TELEGRAM_API_DOMAIN } from "./constants";
 
 const send = async (message, token, context) => {
   return await fetch(`${TELEGRAM_API_DOMAIN}/bot${token}/sendMessage`, {
-    method : "POST",
-    headers : {
-      "Content-Type" : "application/json",
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
     },
-    body : JSON.stringify({
+    body: JSON.stringify({
       ...context,
-      text : message,
+      text: message,
     }),
   });
 };
@@ -26,27 +26,26 @@ export const sendMessage = async (message, botToken, chatContext) => {
     await send(`<pre>\n${msg}\n</pre>`, botToken, chatContext);
   }
 
-  return new Response("MESSAGE BATCH SEND", {status : 200});
+  return new Response("MESSAGE BATCH SEND", { status: 200 });
 };
 
 const bindTelegramWebHook = async (token, url) => {
   return await fetch(`${TELEGRAM_API_DOMAIN}/bot${token}/setWebhook`, {
-           method : "POST",
-           headers : {
-             "Content-Type" : "application/json",
-           },
-           body : JSON.stringify({
-             url,
-           }),
-         })
-      .then((res) => res.json());
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      url,
+    }),
+  }).then((res) => res.json());
 };
 
 const checkIsWebhookSet = async (token) => {
   try {
-    const response =
-        await fetch(`${TELEGRAM_API_DOMAIN}/bot${token}/getWebhookInfo`)
-            .then((res) => res.json());
+    const response = await fetch(
+      `${TELEGRAM_API_DOMAIN}/bot${token}/getWebhookInfo`
+    ).then((res) => res.json());
 
     return !!response?.result?.url;
   } catch (error) {
