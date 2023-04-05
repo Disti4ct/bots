@@ -33,6 +33,7 @@ async def on_user_joined(message: types.Message):
     if not db.user_exists(message.from_user.id):
         db.add_user(message.from_user.id, 0)
 
+
 # remove an user from the DB
 
 
@@ -47,6 +48,7 @@ async def on_user_left(message: types.Message):
         "MarkdownV2",
     )
 
+
 # ban command (admins only)
 
 
@@ -56,12 +58,15 @@ async def user_ban(message: types.Message):
         await message.reply("⚠️ This command must be the answer on some message")
         return
 
-    await message.bot.delete_message(chat_id=config.GROUP_ID, message_id=message.message_id)
+    await message.bot.delete_message(
+        chat_id=config.GROUP_ID, message_id=message.message_id
+    )
     await message.bot.kick_chat_member(
         chat_id=config.GROUP_ID,
         user_id=message.reply_to_message.from_user.id,
     )
     await message.reply_to_message.reply("😈 User is kicked")
+
 
 # unban user (admins only)
 
@@ -69,11 +74,10 @@ async def user_ban(message: types.Message):
 @dp.message_handler(is_admin=True, commands=["reborn"], commands_prefix="!/")
 async def user_unban(message: types.Message):
     await message.bot.unban_chat_member(
-        chait_id=config.GROUP_ID,
-        user_id=message,
-        only_if_banned=True
+        chait_id=config.GROUP_ID, user_id=message, only_if_banned=True
     )
     await message.reply_to_message.reply("😇 User is reborned")
+
 
 # show user's status
 
@@ -84,8 +88,7 @@ async def show_user_karma(message: types.Message):
     user_status = bot_helpers.get_status_by_karma(user_karma)
 
     await message.bot.send_message(
-        config.GROUP_ID,
-        f"📜 Your status: {str(user_status)}"
+        config.GROUP_ID, f"📜 Your status: {str(user_status)}"
     )
 
     if int(user_karma) == -42:
@@ -94,6 +97,7 @@ async def show_user_karma(message: types.Message):
             message.from_user.first_name,
             message.from_user.id,
         )
+
 
 # send a poll about user kicking
 
@@ -132,12 +136,13 @@ async def send_kicking_poll(*args):
     else:
         await bot.send_message("🤞 This time he was lucky")
 
+
 # secret method (admins only)
 
 
 @dp.message_handler(is_admin=True, commands=["secret"], commands_prefix="!/")
 async def secret_method(message: types.Message):
-    user_secret = bot_helpers.message_without_command('/secret', message.text)
+    user_secret = bot_helpers.message_without_command("/secret", message.text)
     # don't show secret in the chat
     await message.delete()
 
@@ -154,6 +159,7 @@ async def secret_method(message: types.Message):
         config.GROUP_ID,
         f"✨ Secret mode is activated for {message.chat.first_name}",
     )
+
 
 # delete messages with forbidden words and decrease user's karma
 
@@ -172,6 +178,7 @@ async def filter_messages(message: types.Message):
             "MarkdownV2",
         )
 
+
 # run long-polling
-if __name__ == '__main__':
+if __name__ == "__main__":
     executor.start_polling(dp, skip_updates=True)
