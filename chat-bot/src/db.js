@@ -4,21 +4,15 @@ export const countMessage = async (message, db) => {
     const userData = await db.get(userId);
 
     if (userData) {
-      const { messageCounter } = JSON.parse(userData);
+      const {messageCounter} = JSON.parse(userData);
 
-      await db.put(
-        userId,
-        JSON.stringify({
-          messageCounter: messageCounter + 1,
-        })
-      );
+      await db.put(userId, JSON.stringify({
+        messageCounter : messageCounter + 1,
+      }));
     } else {
-      await db.put(
-        userId,
-        JSON.stringify({
-          messageCounter: 1,
-        })
-      );
+      await db.put(userId, JSON.stringify({
+        messageCounter : 1,
+      }));
     }
   }
 };

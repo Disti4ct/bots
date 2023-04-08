@@ -1,4 +1,4 @@
-import { MAX_FREE_MESSAGES } from "./constants";
+import {MAX_FREE_MESSAGES} from "./constants";
 
 export const needToAskForPayment = async (request, db) => {
   try {
@@ -9,7 +9,7 @@ export const needToAskForPayment = async (request, db) => {
       const userData = await db.get(userId);
 
       if (userData) {
-        const { messageCounter } = JSON.parse(userData);
+        const {messageCounter} = JSON.parse(userData);
 
         return messageCounter > MAX_FREE_MESSAGES;
       }
