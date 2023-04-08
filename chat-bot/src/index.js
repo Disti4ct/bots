@@ -1,5 +1,6 @@
 import { msgChatWithOpenAI } from "./openai";
 import { sendMessage, setupBot } from "./telegram";
+import { countMessage } from "./db";
 
 const extractUserMessage = async (request) => {
   try {
@@ -27,12 +28,14 @@ const requestToOpenAI = async ({ openAiToken, text }) => {
 };
 
 const handleRequest = async (params) => {
-  const { request, botToken } = params;
+  const { request, botToken, db } = params;
   const { pathname } = new URL(request.url);
 
   try {
     if (pathname === `/telegram/${botToken}/webhook`) {
       const message = await extractUserMessage(request);
+
+      await countMessage(message, db);
 
       // Check if we have a text parameter, so ChatGPT can process it
       // and if we have a chat id so we send it back to a right user
@@ -76,7 +79,7 @@ const handleRequest = async (params) => {
 
 export default {
   async fetch(request, env) {
-    const { TG_BOT_TOKEN, OPEN_AI_TOKEN } = env;
+    const { TG_BOT_TOKEN, OPEN_AI_TOKEN, DATABASE } = env;
 
     await setupBot(request, TG_BOT_TOKEN);
 
@@ -84,6 +87,7 @@ export default {
       request,
       botToken: TG_BOT_TOKEN,
       openAiToken: OPEN_AI_TOKEN,
+      db: DATABASE,
     });
 
     return response || new Response("yep", { status: 200 });
