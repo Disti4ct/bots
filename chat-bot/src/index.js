@@ -1,6 +1,6 @@
+import { countMessage } from "./db";
 import { msgChatWithOpenAI } from "./openai";
 import { sendMessage, setupBot } from "./telegram";
-import { countMessage } from "./db";
 
 const extractUserMessage = async (request) => {
   try {
