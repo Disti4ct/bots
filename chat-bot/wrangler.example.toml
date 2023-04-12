@@ -14,6 +14,8 @@ kv_namespaces = [
 
 TG_BOT_TOKEN = "Telegram bot token"
 OPEN_AI_TOKEN = "API token from OpenAI"
-# You can use random hash values.
+# You can use random hash values 32 characters long
 ACTIVATION_CODE = "Code to activate the bot. Required if the user has reached the limit of free messages"
 AMOUNT_OF_FREE_MESSAGES = 3 # The number of messages each user can spend
+# Payment service link
+LINK_TO_PAY_FOR_CODE=""
