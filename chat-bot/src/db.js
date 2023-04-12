@@ -1,3 +1,5 @@
+import { sendMessage } from "./telegram";
+
 export const countMessage = async (message, db) => {
   if (message?.from?.id) {
     const userId = message.from.id;
@@ -44,15 +46,15 @@ export const validateActivationMessage = async ({
   message,
   activationCode,
   botToken,
+  db,
 }) => {
   if (message.text.match(/This is the activation code: ?\n?[a-z0-9]{32}$/m)) {
     // Extract code sent
     const codeSent = message.text.match(/[a-z0-9]{32}/);
 
     // If code isn't right send a message about it
-    if (codeSent !== activationCode) {
+    if (String(codeSent) !== String(activationCode)) {
       await sendMessage("Your code is incorrect", botToken, message.chat.id);
-
       return false;
     }
 
@@ -68,5 +70,7 @@ export const validateActivationMessage = async ({
         isItPaidFor: true,
       })
     );
+    await sendMessage("Successfully activated", botToken, message.chat.id);
+    return true;
   }
 };

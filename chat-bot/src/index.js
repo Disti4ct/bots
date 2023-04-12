@@ -1,4 +1,8 @@
-import { countMessage, needToAskForPayment } from "./db";
+import {
+  countMessage,
+  needToAskForPayment,
+  validateActivationMessage,
+} from "./db";
 import { msgChatWithOpenAI } from "./openai";
 import { sendMessage, setupBot } from "./telegram";
 
@@ -47,42 +51,43 @@ const handleRequest = async (params) => {
       if (message?.text && message?.chat?.id) {
         // First of all check the message format
         // If a user sent an activation code we validate it
-        const validationResult = await validateActivationMessage({
-          message,
-          activationCode,
-          botToken,
-        });
-
-        if (validationResult === false) return;
-
-        // Check if the user has reached the limit of free messages
-        // Send a payment link and ask for an activation code
-        const isPaymentRequired = await needToAskForPayment({
-          userId: message.from.id,
-          db,
-          amountOfFreeMessages,
-        });
-
-        if (isPaymentRequired) {
-          await sendMessage(
-            `
-          <b>You've reached the limit of free messages.</b>
-          <br />
-          To continue using this bot you need to pay for the activation code via the link below:
-          <br />
-          <a href="${paymentLink}">Pay for usage</a>
-          <br />
-          After payment, you need to send a message here with an activation code in the format:
-          <br />
-          <b>This is the activation code:
-            <br />
-            af9e4f3ef2080a003ef910dc2575497d
-          </b>
-          `,
+        try {
+          const validationResult = await validateActivationMessage({
+            message,
+            activationCode,
             botToken,
-            message.chat.id
+            db,
+          });
+
+          // If result isn't it means user sent activated code
+          // So we won't need to send it to ChatGPT
+          if (validationResult !== undefined) return;
+
+          // Check if the user has reached the limit of free messages
+          // Send a payment link and ask for an activation code
+          const isPaymentRequired = await needToAskForPayment({
+            userId: message.from.id,
+            db,
+            amountOfFreeMessages,
+          });
+
+          if (isPaymentRequired) {
+            await sendMessage(
+              `<b>You've reached the limit of free messages.</b>\nTo continue using this bot you need to pay for the activation code via the link below:\n<a href="${paymentLink}">Pay for usage</a>\nAfter payment, you need to send a message here with an activation code in the format:\n\n<i>This is the activation code:\naf9e4f3ef2080a003ef910dc2575497d</i>`,
+              botToken,
+              message.chat.id
+            );
+            return;
+          }
+        } catch (error) {
+          await sendMessage(
+            `error ${JSON.stringify({
+              message: error.message,
+              stack: error.stack,
+            })}`,
+            botToken,
+            message?.chat?.id
           );
-          return;
         }
 
         await countMessage(message, db);
