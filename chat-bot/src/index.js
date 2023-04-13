@@ -135,6 +135,7 @@ export default {
       TG_BOT_TOKEN,
       OPEN_AI_TOKEN,
       DATABASE,
+      // Monetization variables
       ACTIVATION_CODE,
       AMOUNT_OF_FREE_MESSAGES,
       LINK_TO_PAY_FOR_CODE,

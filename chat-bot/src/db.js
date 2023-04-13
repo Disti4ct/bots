@@ -11,6 +11,7 @@ export const countMessage = async (message, db) => {
       await db.put(
         userId,
         JSON.stringify({
+          ...userData,
           messageCounter: messageCounter + 1,
         })
       );
