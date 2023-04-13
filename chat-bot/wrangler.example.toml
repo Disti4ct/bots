@@ -1,11 +1,21 @@
 name = "chatbot"
 main = "src/index.js"
-# date depends on a wrangler version. It's probable will be a date of your work with code
+# Date depends on a wrangler version. It's probable will be a date of your work with code.
 compatibility_date = "2023-03-28"
 send_metrics = false
 
+kv_namespaces = [
+  # Create a new KV in Cloudflare dashboard and copy ID from there.
+  # Assuming you call KV as "DATABASE". Otherwise also replace binding with your name.
+  { binding = "DATABASE", id = "" }
+]
+
 [vars]
 
-TG_BOT_TOKEN = ""
-OPEN_AI_TOKEN = ""
-CHAT_ID = ""
+TG_BOT_TOKEN = "Telegram bot token"
+OPEN_AI_TOKEN = "API token from OpenAI"
+# You can use random hash values 32 characters long
+ACTIVATION_CODE = "Code to activate the bot. Required if the user has reached the limit of free messages"
+AMOUNT_OF_FREE_MESSAGES = 3 # The number of messages each user can spend
+# Payment service link
+LINK_TO_PAY_FOR_CODE=""
