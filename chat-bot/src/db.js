@@ -6,13 +6,13 @@ export const countMessage = async (message, db) => {
     const userData = await db.get(userId);
 
     if (userData) {
-      const { messageCounter } = JSON.parse(userData);
+      const parsedData = JSON.parse(userData);
 
       await db.put(
         userId,
         JSON.stringify({
-          ...userData,
-          messageCounter: messageCounter + 1,
+          ...parsedData,
+          messageCounter: parsedData.messageCounter + 1,
         })
       );
     } else {
@@ -67,7 +67,7 @@ export const validateActivationMessage = async ({
     await db.put(
       userId,
       JSON.stringify({
-        ...userData,
+        ...JSON.parse(userData),
         isItPaidFor: true,
       })
     );
