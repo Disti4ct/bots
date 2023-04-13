@@ -6,7 +6,7 @@ send_metrics = false
 
 kv_namespaces = [
   # Create a new KV in Cloudflare dashboard and copy ID from there.
-  # Assuming you call KV as "DATABASE". Otherwise also replace binding with your name. 
+  # Assuming you call KV as "DATABASE". Otherwise also replace binding with your name.
   { binding = "DATABASE", id = "" }
 ]
 
