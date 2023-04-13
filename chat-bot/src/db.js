@@ -1,4 +1,4 @@
-import {sendMessage} from "./telegram";
+import { sendMessage } from "./telegram";
 
 export const countMessage = async (message, db) => {
   if (message?.from?.id) {
@@ -8,14 +8,20 @@ export const countMessage = async (message, db) => {
     if (userData) {
       const parsedData = JSON.parse(userData);
 
-      await db.put(userId, JSON.stringify({
-        ...parsedData,
-        messageCounter : parsedData.messageCounter + 1,
-      }));
+      await db.put(
+        userId,
+        JSON.stringify({
+          ...parsedData,
+          messageCounter: parsedData.messageCounter + 1,
+        })
+      );
     } else {
-      await db.put(userId, JSON.stringify({
-        messageCounter : 1,
-      }));
+      await db.put(
+        userId,
+        JSON.stringify({
+          messageCounter: 1,
+        })
+      );
     }
   }
 };
@@ -28,12 +34,10 @@ export const needToAskForPayment = async ({
   const userData = await db.get(userId);
 
   if (userData) {
-    const {messageCounter, isItPaidFor} = JSON.parse(userData);
+    const { messageCounter, isItPaidFor } = JSON.parse(userData);
 
-    if (isItPaidFor)
-      return false;
-    if (messageCounter > amountOfFreeMessages)
-      return true;
+    if (isItPaidFor) return false;
+    if (messageCounter > amountOfFreeMessages) return true;
   }
 
   return false;
@@ -60,10 +64,13 @@ export const validateActivationMessage = async ({
     const userId = message.from.id;
     const userData = await db.get(userId);
 
-    await db.put(userId, JSON.stringify({
-      ...JSON.parse(userData),
-      isItPaidFor : true,
-    }));
+    await db.put(
+      userId,
+      JSON.stringify({
+        ...JSON.parse(userData),
+        isItPaidFor: true,
+      })
+    );
     await sendMessage("Successfully activated", botToken, message.chat.id);
     return true;
   }
